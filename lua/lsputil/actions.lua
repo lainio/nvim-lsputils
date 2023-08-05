@@ -1,3 +1,5 @@
+local util = require'lsputil.util'
+
 local M = {}
 local api = vim.api
 -- close handler
@@ -27,8 +29,11 @@ function M.close_selected_handler(index, command)
     elseif command == 'sp' then
 	vim.cmd('sp')
     elseif command == 'tab' then
-	local buffer = api.nvim_get_current_buf()
-        vim.cmd(string.format(":tab sb %d", buffer))
+        local cwd = vim.fn.getcwd(0)..'/'
+        local fname = util.get_relative_path(cwd, item.filename)
+        local myCmd = string.format(':tabe %s', fname)
+        -- print('kukkuu:'..myCmd)
+        vim.cmd(myCmd)
     end
     vim.lsp.util.jump_to_location(location)
     vim.cmd(':normal! zz')
@@ -41,7 +46,7 @@ end
 function M.selection_handler(index)
     if index == nil then return end
     local item = M.items[index]
-    local startPoint = item.lnum - 3
+    local startPoint = item.lnum - 13
     if startPoint <= 0 then
 	startPoint = item.lnum
     end
