@@ -23,19 +23,22 @@ function M.close_selected_handler(index, command)
 	    }
 	}
     }
+    local reuse_win = true
     if command == nil then
     elseif command == 'vsp' then
-	vim.cmd('vsp')
+        reuse_win = false
+        vim.cmd('vsp')
     elseif command == 'sp' then
-	vim.cmd('sp')
+        reuse_win = false
+        vim.cmd('sp')
     elseif command == 'tab' then
         local cwd = vim.fn.getcwd(0)..'/'
         local fname = util.get_relative_path(cwd, item.filename)
         local myCmd = string.format(':tabe %s', fname)
-        -- print('kukkuu:'..myCmd)
+        reuse_win = false
         vim.cmd(myCmd)
     end
-    vim.lsp.util.jump_to_location(location)
+    vim.lsp.util.jump_to_location(location, 'utf-8', reuse_win)
     vim.cmd(':normal! zz')
     M.items = nil
 end
